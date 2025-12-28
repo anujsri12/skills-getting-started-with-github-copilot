@@ -46,5 +46,38 @@
     </footer>
 
     <script src="app.js"></script>
+    <script>
+      // Enhance activity card rendering to include participants
+      document.addEventListener("DOMContentLoaded", () => {
+        function renderActivities(activities) {
+          const list = document.getElementById("activities-list");
+          list.innerHTML = "";
+          Object.entries(activities).forEach(([name, activity]) => {
+            const card = document.createElement("div");
+            card.className = "activity-card";
+            card.innerHTML = `
+              <h4>${name}</h4>
+              <p>${activity.description}</p>
+              <p><strong>Schedule:</strong> ${activity.schedule}</p>
+              <p><strong>Max Participants:</strong> ${activity.max_participants}</p>
+              <div class="participants-section">
+                <strong>Participants:</strong>
+                <ul class="participants-list">
+                  ${activity.participants.length === 0
+                    ? '<li class="no-participants">No participants yet</li>'
+                    : activity.participants.map(email => `<li>${email}</li>`).join("")}
+                </ul>
+              </div>
+            `;
+            list.appendChild(card);
+          });
+        }
+
+        // Fetch and render activities
+        fetch("/activities")
+          .then(res => res.json())
+          .then(data => renderActivities(data));
+      });
+    </script>
   </body>
 </html>
